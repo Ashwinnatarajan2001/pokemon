@@ -10,7 +10,7 @@ window.onload = function() {
     var ctx = canvas.getContext("2d");
     var w = document.getElementById("canvas").offsetWidth;
     var h = document.getElementById("canvas").offsetHeight;
-    var terrainImageLoaded = false, houseImageLoaded = false, pokeballImageLoaded = false, playerImageLoaded = false;
+    var terrainImageLoaded = false, houseImageLoaded = false,heartImageLoaded = false, pokeballImageLoaded = false, playerImageLoaded = false;
     var objectSizes = 20;
     var speed = 100;
     var modifier = 100;
@@ -31,6 +31,21 @@ window.onload = function() {
         assetsLoaded();
     };
     houseImage.src = "images/house.png";
+    //heart image
+    
+    var heartImage = new Image();
+    heartImageLoaded = true;
+    heartImage.src = "images/heart.png";
+    for(let i=0;i<3;i++){
+    document.body.appendChild(heartImage,[i])
+        
+    }
+    
+   
+        
+    
+    
+    
 
     //main sound
     var mainTheme = new Audio("sounds/main-theme.mp3");
@@ -65,6 +80,7 @@ window.onload = function() {
      * @Object
      * @name pokeball
      */
+    
     var pokeball = {
         x: 0,
         y: 0,
@@ -229,6 +245,7 @@ window.onload = function() {
     function update() {
         ctx.drawImage(terrainImage, 0, 0);
         ctx.drawImage(houseImage, 80, 60);
+        ctx.drawImage(heartImage, 380, 0);
 
         //Genboard
         board();
@@ -240,6 +257,7 @@ window.onload = function() {
         console.log("y:",(player.y * objectSizes)/objectSizes);
         console.log("x",(player.x * objectSizes)/objectSizes);
         ctx.drawImage(playerImage, player.direction[player.currentDirection].x, player.direction[player.currentDirection].y, objectSizes-2, objectSizes, player.x * objectSizes, player.y * objectSizes, objectSizes, objectSizes);
+        
     }
 
     /**
@@ -297,7 +315,7 @@ window.onload = function() {
      * @name assetsLoaded
      */
     function assetsLoaded() {
-        if(terrainImageLoaded == true && houseImageLoaded == true && pokeballImageLoaded == true && playerImageLoaded == true) {
+        if(terrainImageLoaded == true && houseImageLoaded == true && heartImageLoaded == true && pokeballImageLoaded == true && playerImageLoaded == true) {
             pokeball.generatePosition();
             update();
         }
