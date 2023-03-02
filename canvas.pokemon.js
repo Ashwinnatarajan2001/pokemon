@@ -21,6 +21,7 @@ window.onload = function() {
     terrainImage.onload = function () {
         terrainImageLoaded = true;
         assetsLoaded();
+        
     };
     terrainImage.src = "images/pokemon_terrain.jpg";
 
@@ -38,7 +39,7 @@ window.onload = function() {
     heartImage.src = "images/heart.png";
     for(let i=0;i<3;i++){
     document.body.appendChild(heartImage,[i])
-        
+        console.log(heartImage)
     }
     
    
@@ -49,7 +50,7 @@ window.onload = function() {
 
     //main sound
     var mainTheme = new Audio("sounds/main-theme.mp3");
-    mainTheme.loop = true;
+    mainTheme.loop = false;
     mainTheme.volume = 0.5;
     mainTheme.play();
 
