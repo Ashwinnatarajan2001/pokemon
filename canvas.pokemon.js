@@ -7,9 +7,16 @@ window.onload = function () {
   "use strict";
 
   var canvas = document.getElementById("canvas");
+  const countdownEle=document.getElementById("countdown");
+  
   var ctx = canvas.getContext("2d");
   var w = document.getElementById("canvas").offsetWidth;
   var h = document.getElementById("canvas").offsetHeight;
+  const startTime=11;
+    let time=startTime - 1;
+    
+  
+    let interval = setInterval(newTimer,1000);
   var terrainImageLoaded = false,
     houseImageLoaded = false,
     pokeballImageLoaded = false,
@@ -91,6 +98,8 @@ window.onload = function () {
     } while (check_collision(pokeball.x, pokeball.y));
 
     pokeball.spritePosition = Math.floor(Math.random() * 4) + 0; // get position from 0-4
+
+    
   };
 
   /**
@@ -235,30 +244,7 @@ window.onload = function () {
 
     update();
   };
-  //    timer code:
-//   const startTime=11;
-//   let time=startTime - 1;
-//   const countdownEle=document.getElementById("countdown");
-
-//   let interval = setInterval(newTimer,1000);
-
-//  function newTimer(){
-//     let minutes=Math.floor(time / 60);
-//  //    console.log(minutes)
-//     let seconds=time % 60;
- 
-//     minutes = minutes < 10 ? '0' + minutes : minutes;
-
-//     seconds = seconds < 10 ? '0' + seconds : seconds;
-
-//     countdownEle.innerHTML=`${minutes}:${seconds}`;
-//     time --;
-
-//     if(time == -1){
-//     clearInterval(interval);
-     
-//  }
-// }
+  
 
   /**
    * Handle all the updates of the canvas and creates the objects
@@ -266,9 +252,32 @@ window.onload = function () {
    * @name update
    */
   
+  
+   function newTimer(){
+      let minutes=Math.floor(time / 60);
+      
+      let seconds=time % 60;
+   
+      minutes = minutes < 10 ? '0' + minutes : minutes;
+  
+      seconds = seconds < 10 ? '0' + seconds : seconds;
+  
+      countdownEle.innerHTML=`${minutes}:${seconds}`;
+      
+      time --;
+  
+      if(time == -1){
+      clearInterval(interval);
+       
+   }
+  
+  }
+  
+  
   function update() {
     ctx.drawImage(terrainImage, 0, 0);
     ctx.drawImage(houseImage, 80, 60);
+    
     
 
     //Genboard
@@ -302,6 +311,7 @@ window.onload = function () {
       objectSizes
     );
     drawHearts();
+    
   }
 
   /**
@@ -373,10 +383,13 @@ window.onload = function () {
       playerImageLoaded == true
       //   heartImageLoaded == true
     ) {
+      
       pokeball.generatePosition();
       update();
       drawHearts();
+      
     }
+
   }
 
   function drawHearts() {
@@ -384,7 +397,10 @@ window.onload = function () {
     ctx.drawImage(heartImage, canvas.width - 60*i, 5, 60, 45);
     
     }
-    Time()
+   Timer(); 
+  }
+  function Timer(){
+    seconds > 10 ? '0' + seconds : seconds;
   }
   
   /**
