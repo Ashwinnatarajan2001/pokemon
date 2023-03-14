@@ -290,23 +290,22 @@ window.onload = function() {
     };
 
 
-      //create firstTimer to start the time
+      
       var interval;
       var time;
    
-   //    const startCountdown=() => {
+   
         const firstTimer =() => {
    
         const startTime=11;
         time=startTime - 1;
-    // const ele=document.querySelector("P");
-    // const countdownEle=document.getElementById("id2");
+    
         const countdownEle=document.querySelector("P");
    
         interval = setInterval(newTimer,1000);
          function newTimer(){
            let minutes=Math.floor(time / 60);
-     //   console.log(minutes)
+    
            let seconds=time % 60;
    
            minutes = minutes < 10 ? '0' + minutes : minutes;
@@ -317,40 +316,31 @@ window.onload = function() {
            console.log(countdownEle.innerText)
            time --;
            
-        // clearInterval(intervals)
-        // function one(){
+        
           if(time == -1){
              clearInterval(interval);
              
-            drawHearts(lives-2);
-            //  alert("your time is out");
+            drawHearts(lives-1);
+              alert("your time is out");
             var a=confirm("Your time is out,you lose one life and continue the game");
              
              console.log("live count",lives);
              
              if(a){
                
-            //    alert("you leave one life")
-            // drawHearts(lives);
-            // pauseCountdown ();
-            //    secondTimer();
+    
             firstTimer ();
              }
-             drawHearts(lives-1)
+             drawHearts(lives-2)
              var b=confirm("Your time is out,you lose one life and continue the game");
              if(b){
                 firstTimer()
              }
-             if(drawHearts(lives-1)){
-                firstTimer()
-             }
-             else{
-                return
-             }
+    
              
             
            }
-          // console.log("iam 1",countdownEle)
+        
         }
       };
    firstTimer ();
@@ -437,7 +427,7 @@ window.onload = function() {
         }
     }
     function drawHearts(a){
-        //ctx.clearRect(heartImage,canvas.width-30*i,4,30,25);
+    
         for(var i=0;i<=a;i++){
             ctx.drawImage(heartImage,canvas.width-60*i,5,60,45);
         
@@ -448,28 +438,7 @@ window.onload = function() {
         
         
     }
-    // function drawHeart(){
-    //     for(var i=0;i<=lives;i++){
-    //         ctx.clearRect(heartImage,canvas.width-30*i,4,30,25);            
-    //         //
-            
-    //         console.log('Test');
-    //     }
-        
-
     
-    // function drawHeart(){
-    //     for(var i=0;i<=lives;i++){
-    //         ctx.drawImage(heartImage,canvas.width-60*1,5,60,45);
-            
-    //         console.log('Test');
-    //     }
-    
-    // }
-
-    /**
-     * Assign of the arrow keys to call the player move
-     */
     document.onkeydown = function(e) {
         e = e || window.event;
 
