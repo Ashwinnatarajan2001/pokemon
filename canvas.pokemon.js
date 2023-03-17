@@ -1,48 +1,44 @@
-/**
- * Pokemon HTML5 canvas game
- * @version 1.0.0
- * @author Panagiotis Vourtsis <vourtsis_pan@hotmail.com>
- */
-window.onload = function () {
+// let timer;
+
+window.onload = function() {
   "use strict";
 
   var canvas = document.getElementById("canvas");
+  // var a=document.createElement("p");
+  // a.setAttribute("id","id2");
+  // a.innerHTML="00:10";
+  // console.log(a);
+  // canvas.appendChild(a);
   var ctx = canvas.getContext("2d");
+  
   var w = document.getElementById("canvas").offsetWidth;
   var h = document.getElementById("canvas").offsetHeight;
-  var terrainImageLoaded = false,
-    houseImageLoaded = false,
-    pokeballImageLoaded = false,
-    playerImageLoaded = false;
-  //   heartImageLoaded = false;
+  var terrainImageLoaded = false, houseImageLoaded = false, pokeballImageLoaded = false, playerImageLoaded = false;
   var objectSizes = 20;
   var speed = 100;
   var modifier = 100;
   var score = 0;
-  var lives = 3; // initialize lives to 3
-
-  // create an array to hold the heart icons for each life
+  var lives = 3;
+  //heartImage
   var heartImage = new Image();
-  heartImage.onload = function () {
-    // heartImageLoaded = true;
-    assetsLoaded();
-  };
-  heartImage.src = "images/heart.png";
-  
+  heartImage.onload=function(){
+      assetsLoaded();
+  }
+  heartImage.src="images/heart.png";
 
   //terrain image
   var terrainImage = new Image();
   terrainImage.onload = function () {
-    terrainImageLoaded = true;
-    assetsLoaded();
+      terrainImageLoaded = true;
+      assetsLoaded();
   };
   terrainImage.src = "images/pokemon_terrain.jpg";
 
   //house image
   var houseImage = new Image();
   houseImage.onload = function () {
-    houseImageLoaded = true;
-    assetsLoaded();
+      houseImageLoaded = true;
+      assetsLoaded();
   };
   houseImage.src = "images/house.png";
 
@@ -50,7 +46,9 @@ window.onload = function () {
   var mainTheme = new Audio("sounds/main-theme.mp3");
   mainTheme.loop = true;
   mainTheme.volume = 0.5;
-  mainTheme.play();
+  // mainTheme.play();
+  
+  
 
   //pokeball-selection
   var pokePick = new Audio("sounds/pickup.mp3");
@@ -59,16 +57,16 @@ window.onload = function () {
   //player image
   var playerImage = new Image();
   playerImage.onload = function () {
-    pokeballImageLoaded = true;
-    assetsLoaded();
+      pokeballImageLoaded = true;
+      assetsLoaded();
   };
   playerImage.src = "images/player.png";
 
   //pokeball image
   var pokeballImage = new Image();
   pokeballImage.onload = function () {
-    playerImageLoaded = true;
-    assetsLoaded();
+      playerImageLoaded = true;
+      assetsLoaded();
   };
   pokeballImage.src = "images/pokeball.png";
 
@@ -80,18 +78,21 @@ window.onload = function () {
    * @name pokeball
    */
   var pokeball = {
-    x: 0,
-    y: 0,
-    spritePosition: 0,
-    spriteItemDistance: 33,
+      x: 0,
+      y: 0,
+      spritePosition: 0,
+      spriteItemDistance: 33,
   };
-  pokeball.generatePosition = function () {
-    do {
-      pokeball.x = Math.floor(Math.random() * 20) + 1;
-      pokeball.y = Math.floor(Math.random() * 16) + 4;
-    } while (check_collision(pokeball.x, pokeball.y));
+  
+ 
 
-    pokeball.spritePosition = Math.floor(Math.random() * 4) + 0; // get position from 0-4
+  pokeball.generatePosition = function() {
+      do {
+          pokeball.x = Math.floor(Math.random() * 20) + 1;
+          pokeball.y = Math.floor(Math.random() * 16) + 4;
+      } while(check_collision(pokeball.x, pokeball.y));
+
+      pokeball.spritePosition = Math.floor(Math.random() * 4) + 0;// get position from 0-4
   };
 
   /**
@@ -102,206 +103,290 @@ window.onload = function () {
    * @name pokeball
    */
   var player = {
-    x: Math.round(w / 2 / objectSizes),
-    y: Math.round(h / 2 / objectSizes),
-    currentDirection: "stand",
-    direction: {
-      stand: {
-        x: 0,
-        y: 0,
-      },
-      "down-1": {
-        x: 17,
-        y: 0,
-      },
-      "down-2": {
-        x: 34,
-        y: 0,
-      },
-      "up-1": {
-        x: 125,
-        y: 0,
-      },
-      "up-2": {
-        x: 142,
-        y: 0,
-      },
-      "left-1": {
-        x: 69,
-        y: 0,
-      },
-      "left-2": {
-        x: 87,
-        y: 0,
-      },
-      "right-1": {
-        x: 160,
-        y: 0,
-      },
-      "right-2": {
-        x: 178,
-        y: 0,
-      },
-    },
+      x: Math.round((w/2)/objectSizes),
+      y: Math.round((h/2)/objectSizes),
+      currentDirection: "stand",
+      direction: {
+          "stand" : {
+              x: 0,
+              y: 0
+          },
+          "down-1" : {
+              x: 17,
+              y: 0
+          },
+          "down-2" : {
+              x: 34,
+              y: 0
+          },
+          "up-1" : {
+              x: 125,
+              y: 0
+          },
+          "up-2" : {
+              x: 142,
+              y: 0
+          },
+          "left-1" : {
+              x: 69,
+              y: 0
+          },
+          "left-2" : {
+              x: 87,
+              y: 0
+          },
+          "right-1" : {
+              x: 160,
+              y: 0
+          },
+          "right-2" : {
+              x: 178,
+              y: 0
+          }
+      }
   };
-  function drawHearts() {
-    for (var i =0; i <=lives; i++) {
-      ctx.drawImage(heartImage, canvas.width - 45*i , 19, 30, 30);
+  player.move = function(direction) {
+// firstTimer();
+      /**
+       * A temporary object to hold the current x, y so if there is a collision with the new coordinates to fallback here
+       */
+      var hold_player = {
+          x: player.x,
+          y: player.y
+      };
+
+      /**
+       * Decide here the direction of the user and do the neccessary changes on the directions
+       */
+      switch(direction) {
+          case "left":
+              player.x -= speed / modifier;
+              if(player.currentDirection == "stand") {
+                  player.currentDirection = "left-1";
+              } else if(player.currentDirection == "left-1") {
+                  player.currentDirection = "left-2";
+              } else if(player.currentDirection == "left-2") {
+                  player.currentDirection = "left-1";
+              } else {
+                  player.currentDirection = "left-1";
+              }
+              break;
+          case "right":
+              player.x += speed / modifier;
+              if(player.currentDirection == "stand") {
+                  player.currentDirection = "right-1";
+              } else if(player.currentDirection == "right-1") {
+                  player.currentDirection = "right-2";
+              } else if(player.currentDirection == "right-2") {
+                  player.currentDirection = "right-1";
+              } else {
+                  player.currentDirection = "right-1";
+              }
+              break;
+          case "up":
+              player.y -= speed / modifier;
+
+              if(player.currentDirection == "stand") {
+                  player.currentDirection = "up-1";
+              } else if(player.currentDirection == "up-1") {
+                  player.currentDirection = "up-2";
+              } else if(player.currentDirection == "up-2") {
+                  player.currentDirection = "up-1";
+              } else {
+                  player.currentDirection = "up-1";
+              }
+
+              break;
+          case "down":
+              player.y += speed / modifier;
+
+              if(player.currentDirection == "stand") {
+                  player.currentDirection = "down-1";
+              } else if(player.currentDirection == "down-1") {
+                  player.currentDirection = "down-2";
+              } else if(player.currentDirection == "down-2") {
+                  player.currentDirection = "down-1";
+              } else {
+                  player.currentDirection = "down-1";
+              }
+              break;
+      }
+
+      /**
+       * if there is a collision just fallback to the temp object i build before while not change back the direction so we can have a movement
+       */
+      if(check_collision(player.x, player.y)) {
+          player.x = hold_player.x;
+          player.y = hold_player.y;
+      }
+
+      /**
+       * If player finds the coordinates of pokeball the generate new one, play the sound and update the score
+       */
+
+      //  function three(){
+          
+      if(player.x == pokeball.x && player.y == pokeball.y) { // found a pokeball !! create a new one
+          console.log("found a pokeball of "+pokeball.spritePosition+"! Bravo! ");
+          pokePick.pause();
+          pokePick.currentTime = 0;
+          pokePick.play();
+          score += 1;
+          pokeball.generatePosition();
+          firstTimer();
+          
+       
+         //remove clearInterval and add firstTimer
      
-
-      // document.body.append(heartImage);
-    }
-    
-    myFunction()
-  }
-  
-  function myFunction(){
-  setTimeout(drawHearts,5000);
-    lives--; 
-  
    }
-   
-  player.move = function (direction) {
-    /**
-     * A temporary object to hold the current x, y so if there is a collision with the new coordinates to fallback here
-     */
-    var hold_player = {
-      x: player.x,
-      y: player.y,
-    };
-
-    /**
-     * Decide here the direction of the user and do the neccessary changes on the directions
-     */
-    switch (direction) {
-      case "left":
-        player.x -= speed / modifier;
-        if (player.currentDirection == "stand") {
-          player.currentDirection = "left-1";
-        } else if (player.currentDirection == "left-1") {
-          player.currentDirection = "left-2";
-        } else if (player.currentDirection == "left-2") {
-          player.currentDirection = "left-1";
-        } else {
-          player.currentDirection = "left-1";
-        }
-        break;
-      case "right":
-        player.x += speed / modifier;
-        if (player.currentDirection == "stand") {
-          player.currentDirection = "right-1";
-        } else if (player.currentDirection == "right-1") {
-          player.currentDirection = "right-2";
-        } else if (player.currentDirection == "right-2") {
-          player.currentDirection = "right-1";
-        } else {
-          player.currentDirection = "right-1";
-        }
-        break;
-      case "up":
-        player.y -= speed / modifier;
-
-        if (player.currentDirection == "stand") {
-          player.currentDirection = "up-1";
-        } else if (player.currentDirection == "up-1") {
-          player.currentDirection = "up-2";
-        } else if (player.currentDirection == "up-2") {
-          player.currentDirection = "up-1";
-        } else {
-          player.currentDirection = "up-1";
-        }
-
-        break;
-      case "down":
-        player.y += speed / modifier;
-
-        if (player.currentDirection == "stand") {
-          player.currentDirection = "down-1";
-        } else if (player.currentDirection == "down-1") {
-          player.currentDirection = "down-2";
-        } else if (player.currentDirection == "down-2") {
-          player.currentDirection = "down-1";
-        } else {
-          player.currentDirection = "down-1";
-        }
-
-        break;
-    }
-
-    /**
-     * if there is a collision just fallback to the temp object i build before while not change back the direction so we can have a movement
-     */
-    if (check_collision(player.x, player.y)) {
-      player.x = hold_player.x;
-      player.y = hold_player.y;
-    }
-
-    /**
-     * If player finds the coordinates of pokeball the generate new one, play the sound and update the score
-     */
-    if (player.x == pokeball.x && player.y == pokeball.y) {
-      // found a pokeball !! create a new one
-      console.log(
-        "found a pokeball of " + pokeball.spritePosition + "! Bravo! "
-      );
-      pokePick.pause();
-      pokePick.currentTime = 0;
-      pokePick.play();
-      score += 1;
-      pokeball.generatePosition();
-      drawHearts();
-    }
-
-    update();
+      update();
   };
-  
+  if(time == 9){
+    clearInterval(interval)
+    // startCountdown();
+    firstTimer ();
+}
+if(time == 8){
+    clearInterval(interval)
+    // startCountdown();
+    firstTimer ();
+}
+if(time == 7){
+    clearInterval(interval)
+    // startCountdown();
+    firstTimer ();
+}
+if(time == 6){
+    clearInterval(interval)
+    // startCountdown();
+    firstTimer ();
+}
+if(time == 5){
+    clearInterval(interval)
+    // startCountdown();
+    firstTimer ();
+}
+if(time == 4){
+    clearInterval(interval)
+    // startCountdown();
+    firstTimer ();
+}
+if(time == 3){
+    clearInterval(interval)
+    // startCountdown();
+    firstTimer ();
+}
+if(time == 2){
+    clearInterval(interval)
+    // startCountdown();
+    firstTimer ();
+}
+if(time == 1){
+    clearInterval(interval)
+    // startCountdown();
+    firstTimer ();
+}
+if(time == -1){
+    clearInterval(interval)
+}
 
+
+
+    //create firstTimer to start the time
+    var interval;
+    var time;
+ 
+ //    const startCountdown=() => {
+      const firstTimer =() => {
+ 
+      const startTime=11;
+      time=startTime - 1;
+
+      const countdownEle=document.createElement("P");
+      
+ 
+      interval = setInterval(newTimer,1000);
+       function newTimer(){
+         let minutes=Math.floor(time / 60);
+ //    console.log(minutes)
+         let seconds=time % 60;
+ 
+         minutes = minutes < 10 ? '0' + minutes : minutes;
+ 
+         seconds = seconds < 10 ? '0' + seconds : seconds;
+ 
+         countdownEle.innerHTML=`${minutes}:${seconds}`;
+         board();
+
+         
+         ctx.font="18px Arial";
+         ctx.fillStyle="rgba(255,255,255,1)";
+         ctx.fillText(countdownEle.innerText,w-410,h-420);
+         console.log(countdownEle.innerText)
+         time --;
+  // clearInterval(intervals)
+  // function one(){
+    if(time == -2){
+        clearInterval(interval);
+
+
+        alert("you are out of time");
+           
+
+     //    var a=confirm("You lose one life to continue the game");
+
+     //    if(a){
+         // if(countdownEle =0){
+
+
+          alert("You lose one life to continue the game");
+          lives=lives - 1;
+          firstTimer ();
+          drawHearts();
+
+
+          if(lives==-1){
+
+          alert("You lost all your lives! Start a new game!");
+          lives=3;
+          score=0;
+           drawHearts();
+
+
+
+        }
+      }
+      console.log("time",countdownEle)
+   }
+ 
+ };
+ drawHearts();
+
+ firstTimer ();
+
+ 
   /**
    * Handle all the updates of the canvas and creates the objects
    * @function
    * @name update
    */
-  
   function update() {
-    ctx.drawImage(terrainImage, 0, 0);
-    ctx.drawImage(houseImage, 80, 60);
-  //  ctx.drawImage(heartImage,380,0);
+      ctx.drawImage(terrainImage, 0, 0);
+      ctx.drawImage(houseImage, 80, 60);
 
-    //Genboard
-    board();
+      //Genboard
+    //   firstTimer();
+      board();
 
-    //pokeball
-    ctx.drawImage(
-      pokeballImage,
-      pokeball.spritePosition * pokeball.spriteItemDistance,
-      0,
-      objectSizes,
-      objectSizes,
-      pokeball.x * objectSizes,
-      pokeball.y * objectSizes,
-      objectSizes,
-      objectSizes
-    );
+      //pokeball
+      ctx.drawImage(pokeballImage, pokeball.spritePosition*pokeball.spriteItemDistance, 0, objectSizes, objectSizes, pokeball.x * objectSizes, pokeball.y * objectSizes, objectSizes, objectSizes);
 
-    //player
-    console.log("y:", (player.y * objectSizes) / objectSizes);
-    console.log("x", (player.x * objectSizes) / objectSizes);
-    ctx.drawImage(
-      playerImage,
-      player.direction[player.currentDirection].x,
-      player.direction[player.currentDirection].y,
-      objectSizes - 2,
-      objectSizes,
-      player.x * objectSizes,
-      player.y * objectSizes,
-      objectSizes,
-      objectSizes
-    );
-
-//drawHearts();
-
+      //player
+      console.log("y:",(player.y * objectSizes)/objectSizes);
+      console.log("x",(player.x * objectSizes)/objectSizes);
+      ctx.drawImage(playerImage, player.direction[player.currentDirection].x, player.direction[player.currentDirection].y, objectSizes-2, objectSizes, player.x * objectSizes, player.y * objectSizes, objectSizes, objectSizes);
+      //drawHearts();
   }
-
   /**
    * Our function that decides if there is a collision on the objects or not
    * @function
@@ -310,98 +395,93 @@ window.onload = function () {
    * @param {Integer} y - The y axis
    */
   function check_collision(x, y) {
-    var foundCollision = false;
-
-    if (
-      (x > 3 && x < 9 && y == 6) ||
-      (x > 4 && x < 9 && (y == 5 || y == 4 || y == 3))
-    ) {
-      //collision on house
-      console.log("on house");
-      foundCollision = true;
-    }
-
-    if (
-      x < 1 ||
-      x > 20 ||
-      y < 2 ||
-      y > 20 ||
-      (y > 0 && y < 4 && (x == 20 || x == 19)) || //right corner
-      (y > 0 && y < 4 && (x == 2 || x == 3)) || //left corner
-      (y > 18 && (x == 2 || x == 3)) || //left corner
-      (x > 17 && (y == 19 || y == 20)) || //left corner
-      (x > 19 && (y == 17 || y == 18)) //left corner 2
-    ) {
-      console.log("lost on the woods");
-      foundCollision = true;
-    }
-
-    return foundCollision;
+      var foundCollision = false;
+      if(((x > 3 && x < 9) && y == 6) || ((x > 4 && x < 9) && (y == 5 || y == 4 || y == 3))) { //collision on house
+          console.log("on house");
+          foundCollision = true;
+      }
+      if((x<1 || x>20) ||
+          (y<2 || y>20) ||
+          ((y > 0 && y < 4) && (x == 20 || x == 19)) || //right corner
+          ((y > 0 && y < 4) && (x == 2 || x == 3)) || //left corner
+          ((y > 18) && (x == 2 || x == 3)) || //left corner
+          ((x > 17) && (y == 19 || y == 20)) || //left corner
+          ((x > 19) && (y == 17 || y == 18)) //left corner 2
+      ) {
+          console.log("lost on the woods");
+          foundCollision = true
+      }
+      return foundCollision;
   }
-
   /**
    * Here we are creating our board on the bottom right with our score
    * @todo maybe some mute button for the future?
    * @function
    * @name board
    */
+ 
   function board() {
-    ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
-    ctx.fillRect(w - 100, h - 70, 100, 70);
+      ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
+      ctx.fillRect(w-100, h-70, 100, 70);
 
-    ctx.font = "18px Arial";
-    ctx.fillStyle = "rgba(255, 255, 255, 1)";
-    ctx.fillText("You Found", w - 93, h - 45);
+      ctx.font = "18px Arial";
+      ctx.fillStyle = "rgba(255, 255, 255, 1)";
+      ctx.fillText("You Found",w-93, h-45);
 
-    ctx.font = "14px Arial";
-    ctx.fillStyle = "rgba(255, 255, 255, 1)";
-    ctx.fillText(score + " poketballs", w - 85, h - 25);
- 
- 
+      ctx.font = "14px Arial";
+      ctx.fillStyle = "rgba(255, 255, 255, 1)";
+    ctx.fillText(score + " poketballs",w-93, h-25);
+  
     ctx.fillStyle="rgba(0,0,0,0.5)";   
     ctx.fillRect(w-150,h-460,150,45)
     ctx.font="18px Arial";
     ctx.fillStyle="rgba(255,255,255,1)";
     ctx.fillText("LIVES",w-99,h-445);
+    drawHearts();
 
 
+
+    ctx.fillStyle="rgba(0,0,0,0.5)";   
+    ctx.fillRect(w-460,h-460,150,45)
+    ctx.font = "18px Arial";
+         ctx.fillStyle = "rgba(255, 255, 255, 1)";
+         ctx.fillText("TIMER",w-420, h-445);
+        //firstTimer();
   }
-
-
   /**
    * Decide here if all the assets are ready to start updating
    * @function
    * @name assetsLoaded
    */
   function assetsLoaded() {
-    if (
-    
-      terrainImageLoaded == true &&
-      houseImageLoaded == true &&
-      pokeballImageLoaded == true &&
-      playerImageLoaded == true
-      // heartImageLoaded == true
-    ) {
-      pokeball.generatePosition();
-      update();
-      drawHearts();
-    }
+      if(terrainImageLoaded == true && houseImageLoaded == true && pokeballImageLoaded == true && playerImageLoaded == true) {
+          pokeball.generatePosition();
+          update();
+          
+          drawHearts();
+          
+      }
   }
-
-  
-  
-  
-  
+   function drawHearts() {
+      for (var i =0; i <=lives; i++) {
+        ctx.drawImage(heartImage, canvas.width - 45*i , 19, 30, 30);
+        // document.body.append(heartImage);
+        console.log("test")
+      }
+      
+      
+    }
 
   /**
    * Assign of the arrow keys to call the player move
    */
-  document.onkeydown = function (e) {
-    e = e || window.event;
+  document.onkeydown = function(e) {
+      e = e || window.event;
 
-    if (e.keyCode == "37") player.move("left");
-    else if (e.keyCode == "38") player.move("up");
-    else if (e.keyCode == "39") player.move("right");
-    else if (e.keyCode == "40") player.move("down");
+      if(e.keyCode == "37") player.move("left");
+      else if(e.keyCode == "38") player.move("up");
+      else if(e.keyCode == "39") player.move("right");
+      else if(e.keyCode == "40") player.move("down");
+      
   };
-}
+};
